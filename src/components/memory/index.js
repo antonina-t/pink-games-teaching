@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./index.css";
 import StatusBar from "./StatusBar";
 import MemoryCard from "./MemoryCard";
@@ -45,7 +45,17 @@ function flipCard(cards, cardToFlip) {
 
 function Memory() {
   const [game, setGame] = useState({ cards: generateCards() });
+  const [startTime, setStartTime] = useState(0);
+  const [elapsedTime, setElapsedTime] = useState(0);
 
+  useEffect(() => {
+    if (startTime !== 0) {
+      const intervalId = setInterval(() => {
+        setElapsedTime(Date.now() - startTime);
+      }, 1000);
+      return () => clearInterval(intervalId);
+    }
+  }, [startTime]);
   /*
   function onCardClicked(clickedCard) {
     setCards((oldCards) => {
@@ -60,6 +70,10 @@ function Memory() {
   */
 
   function onCardClicked(card) {
+    setStartTime((oldStartTime) =>
+      oldStartTime === 0 ? Date.now() : oldStartTime
+    );
+
     // If the card is already flipped there is nothing we need to do (write an if-statement with a return; inside)
     if (card.isFlipped) return;
 
@@ -110,11 +124,16 @@ function Memory() {
 
   function onRestart() {
     setGame({ cards: generateCards() });
+    setStartTime(0);
+    setElapsedTime(0);
   }
 
   return (
     <div className="game-container">
-      <StatusBar status="Time: 0s" onRestart={onRestart}></StatusBar>
+      <StatusBar
+        status={"Time: " + elapsedTime + "ms"}
+        onRestart={onRestart}
+      ></StatusBar>
       <div className="memory-grid">
         {game.cards.map((card) => (
           <MemoryCard
