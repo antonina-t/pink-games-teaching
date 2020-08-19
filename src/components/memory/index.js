@@ -62,6 +62,26 @@ function Memory() {
   }
   */
 
+  function onCardClicked(card) {
+    // If the card is already flipped there is nothing we need to do (write an if-statement with a return; inside)
+
+    setGame(({ cards, firstCard, secondCard }) => {
+      // The { cards, firstCard, secondCard } above is the decomposed game object.
+      // These three variables represent the previous state, before a card was clicked.
+      // We should return the new state, depending on the previous one and on the card that was clicked.
+      // There are 4 different cases.
+      // 1. If both firstCard and secondCard from the previous state are undefined =>
+      // we should flip the clicked card and set it as the firstCard
+      // 2. Else, if firstCard is defined, but secondCard isn't =>
+      // we should flip the clicked card, keep the firstCard as is, but set the secondCard
+      // 3. Else, if the previous two clicked cards have the same color =>
+      // we should flip the clicked card, set the new firstCard and remove secondCard from the state
+      // 4. Else, if the previous two clicked cards have different colors =>
+      // we should flip the clicked card and flip back firstCard and secondCard,
+      // we should also set the new firstCard and remove secondCard from the state
+    });
+  }
+
   /*
   Runs when the restart button is clicked, resets the state wth the new cards
   */
