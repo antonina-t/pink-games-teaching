@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./index.css";
 import StatusBar from "./StatusBar";
 import MemoryCard from "./MemoryCard";
@@ -45,12 +45,15 @@ function flipCard(cards, cardToFlip) {
 }
 
 function Memory() {
-  // [<current state>, <function to update state>] = useState(<initial state>)
-  const [game, setGame] = useState({
-    cards: generateCards(),
-    firstCard: undefined,
-    secondCard: undefined,
-  });
+  /* Intervals:
+  const startTime = Date.now();
+  const indervalId = setInterval(
+    () => console.log(Date.now() - startTime),
+    1000
+  );
+  clearInterval(indervalId);
+  */
+
   /*
   const [cards, setCards] = useState(generateCards());
   is the same as:
@@ -58,6 +61,32 @@ function Memory() {
   const cards = stateArray[0];
   const setCards = stateArray[1];
   */
+  // [<current state>, <function to update state>] = useState(<initial state>)
+  const [game, setGame] = useState({
+    cards: generateCards(),
+    firstCard: undefined,
+    secondCard: undefined,
+  });
+
+  const [startTime, setStartTime] = useState(0);
+  const [elapsedTime, setElapsedTime] = useState(0);
+
+  // useState(<effect function>, <dependency array> - optional)
+  // <dependency array>:
+  // * undefined: effect function will be run on every render
+  // * []: effect will run only on the first render
+  // * [value1, value2]: effect will run when any of the values change
+  // effect function returns a cleanup function (optional)
+  //   that runs next time the effect function is run OR when the component
+  //   unmounts (disappears from the DOM)
+  useEffect(() => {
+    if (startTime !== 0) {
+      const intervalId = setInterval(() => {
+        setElapsedTime(Date.now() - startTime);
+      }, 1000);
+      return () => clearInterval(intervalId);
+    }
+  }, [startTime]);
 
   /*
   Runs every time a card is clicked, flips this card (updates state)
@@ -128,6 +157,10 @@ function Memory() {
         };
       }
     });
+
+    setStartTime((oldStartTime) =>
+      oldStartTime === 0 ? Date.now() : oldStartTime
+    );
   }
 
   /*
@@ -139,11 +172,16 @@ function Memory() {
       firstCard: undefined,
       secondCard: undefined,
     });
+    setStartTime(0);
+    setElapsedTime(0);
   }
 
   return (
     <div className="game-container">
-      <StatusBar status="Time: 0s" onRestart={onRestart}></StatusBar>
+      <StatusBar
+        status={"Time: " + elapsedTime}
+        onRestart={onRestart}
+      ></StatusBar>
       <div className="memory-grid">
         {game.cards.map((card) => (
           <MemoryCard
