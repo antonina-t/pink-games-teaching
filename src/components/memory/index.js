@@ -32,8 +32,24 @@ function generateCards() {
 }
 
 function Memory() {
+  // [<current state>, <function to update state>] = useState(<initial state>)
+  const [game, setGame] = useState({
+    cards: generateCards(),
+    firstCard: undefined,
+    secondCard: undefined,
+  });
+  /*
   const [cards, setCards] = useState(generateCards());
+  is the same as:
+  const stateArray = useState(generateCards());
+  const cards = stateArray[0];
+  const setCards = stateArray[1];
+  */
 
+  /*
+  Runs every time a card is clicked, flips this card (updates state)
+  */
+  /*
   function onCardClicked(clickedCard) {
     setCards((oldCards) => {
       return oldCards.map((card) => {
@@ -44,16 +60,24 @@ function Memory() {
       });
     });
   }
+  */
 
+  /*
+  Runs when the restart button is clicked, resets the state wth the new cards
+  */
   function onRestart() {
-    setCards(generateCards());
+    setGame({
+      cards: generateCards(),
+      firstCard: undefined,
+      secondCard: undefined,
+    });
   }
 
   return (
     <div className="game-container">
       <StatusBar status="Time: 0s" onRestart={onRestart}></StatusBar>
       <div className="memory-grid">
-        {cards.map((card) => (
+        {game.cards.map((card) => (
           <MemoryCard
             key={card.key}
             color={card.color}
