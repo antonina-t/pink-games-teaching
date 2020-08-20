@@ -21,4 +21,24 @@ export function generateGame() {
   };
 }
 
-export function generateFood(snake) {}
+export function generateFood(snake) {
+  let food = { ...snake.head };
+  while (
+    isEqual(food, snake.head) ||
+    snake.tail.some((cell) => isEqual(food, cell))
+  ) {
+    food = {
+      x: random(width),
+      y: random(height),
+    };
+  }
+  return food;
+}
+
+export function isEqual(p1, p2) {
+  return p1.x === p2.x && p1.y === p2.y;
+}
+
+function random(max) {
+  return Math.floor(Math.random() * max);
+}
