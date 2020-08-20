@@ -42,3 +42,7 @@ export function isEqual(p1, p2) {
 function random(max) {
   return Math.floor(Math.random() * max);
 }
+
+export function tick(game) {
+  return { ...game, food: generateFood(game.snake) };
+}

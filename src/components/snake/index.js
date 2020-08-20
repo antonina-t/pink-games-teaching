@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./index.css";
 import * as helpers from "./helpers.js";
 
@@ -7,6 +7,46 @@ const height = 12;
 
 function Snake() {
   const [game, setGame] = useState(helpers.generateGame());
+
+  useEffect(() => {
+    const intervalId = setInterval(
+      () => setGame((oldGame) => helpers.tick(oldGame)),
+      400
+    );
+    return () => clearInterval(intervalId);
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, []);
+
+  function handleKeyPress(event) {
+    let newDir;
+    switch (event.keyCode) {
+      case 37:
+      case 65:
+        newDir = "left";
+        break;
+      case 38:
+      case 87:
+        newDir = "up";
+        break;
+      case 39:
+      case 68:
+        newDir = "right";
+        break;
+      case 40:
+      case 83:
+        newDir = "down";
+        break;
+    }
+    if (newDir) {
+      setGame((oldGame) => {
+        return { ...oldGame, snake: { ...oldGame.snake, dir: newDir } };
+      });
+    }
+  }
 
   const cells = [];
   for (let y = 0; y < height; y++) {
