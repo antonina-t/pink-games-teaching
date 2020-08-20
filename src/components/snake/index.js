@@ -9,10 +9,7 @@ function Snake() {
   const [game, setGame] = useState(helpers.generateGame());
 
   useEffect(() => {
-    const intervalId = setInterval(
-      () => setGame((oldGame) => helpers.tick(oldGame)),
-      400
-    );
+    const intervalId = setInterval(() => setGame(helpers.tick), 400);
     return () => clearInterval(intervalId);
   }, []);
 
