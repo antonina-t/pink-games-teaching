@@ -71,7 +71,7 @@ function Memory() {
   const [startTime, setStartTime] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
 
-  // useState(<effect function>, <dependency array> - optional)
+  // useEffect(<effect function>, <dependency array> - optional)
   // <dependency array>:
   // * undefined: effect function will be run on every render
   // * []: effect will run only on the first render
