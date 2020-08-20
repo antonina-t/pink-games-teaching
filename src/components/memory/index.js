@@ -70,6 +70,7 @@ function Memory() {
 
   const [startTime, setStartTime] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
+  const [win, setWin] = useState(false);
 
   // useEffect(<effect function>, <dependency array> - optional)
   // <dependency array>:
@@ -80,13 +81,13 @@ function Memory() {
   //   that runs next time the effect function is run OR when the component
   //   unmounts (disappears from the DOM)
   useEffect(() => {
-    if (startTime !== 0) {
+    if (startTime !== 0 && !win) {
       const intervalId = setInterval(() => {
         setElapsedTime(Date.now() - startTime);
       }, 1000);
       return () => clearInterval(intervalId);
     }
-  }, [startTime]);
+  }, [startTime, win]);
 
   /*
   Runs every time a card is clicked, flips this card (updates state)
@@ -130,8 +131,15 @@ function Memory() {
       // 2. Else, if firstCard is defined, but secondCard isn't =>
       // we should flip the clicked card, keep the firstCard as is, but set the secondCard
       else if (!secondCard) {
+        let newCards = flipCard(cards, clickedCard);
+
+        if (newCards.every((card) => card.isFlipped)) {
+          setWin(true);
+          console.log("You win!");
+        }
+
         return {
-          cards: flipCard(cards, clickedCard),
+          cards: newCards,
           firstCard: firstCard,
           secondCard: clickedCard,
         };
@@ -174,6 +182,7 @@ function Memory() {
     });
     setStartTime(0);
     setElapsedTime(0);
+    setWin(false);
   }
 
   return (
