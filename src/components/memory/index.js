@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./index.css";
 import StatusBar from "./StatusBar";
 import MemoryCard from "./MemoryCard";
+import * as utils from "../../utils";
 
 const colors = [
   "pink",
@@ -45,6 +46,12 @@ function flipCard(cards, cardToFlip) {
 }
 
 function Memory() {
+  /*
+  utils
+    .fetchLeaderboard("memory")
+    .then((leaderboard) => console.log(leaderboard));
+  */
+
   /* Intervals:
   const startTime = Date.now();
   const indervalId = setInterval(
@@ -88,6 +95,19 @@ function Memory() {
       return () => clearInterval(intervalId);
     }
   }, [startTime, win]);
+
+  useEffect(() => {
+    if (win) {
+      utils
+        .saveScore("memory", {
+          name: "Antonina",
+          timeMs: elapsedTime,
+        })
+        .then(() => console.log("Score saved."))
+        .then(() => utils.fetchLeaderboard("memory"))
+        .then((leaderboard) => console.log(leaderboard));
+    }
+  }, [win]);
 
   /*
   Runs every time a card is clicked, flips this card (updates state)
