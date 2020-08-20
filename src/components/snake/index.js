@@ -2,9 +2,6 @@ import React, { useState, useEffect } from "react";
 import "./index.css";
 import * as helpers from "./helpers.js";
 
-const width = 20;
-const height = 12;
-
 function Snake() {
   const [game, setGame] = useState(helpers.generateGame());
 
@@ -46,8 +43,8 @@ function Snake() {
   }
 
   const cells = [];
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
+  for (let y = 0; y < helpers.height; y++) {
+    for (let x = 0; x < helpers.width; x++) {
       // same as {x: x, y: y}
       const cell = { x, y };
       let className = "";

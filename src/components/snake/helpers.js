@@ -1,5 +1,5 @@
-const width = 20;
-const height = 12;
+export const width = 20;
+export const height = 12;
 
 export function generateGame() {
   const snake = {

@@ -3,78 +3,13 @@ import "./index.css";
 import StatusBar from "./StatusBar";
 import MemoryCard from "./MemoryCard";
 import * as utils from "../../utils";
-
-const colors = [
-  "pink",
-  "red",
-  "orange",
-  "yellow",
-  "green",
-  "teal",
-  "blue",
-  "purple",
-];
-
-function generateCards() {
-  const cards = [];
-  for (let i = 0; i < colors.length; i++) {
-    cards.push({
-      key: i * 2,
-      color: colors[i],
-      isFlipped: false,
-    });
-    cards.push({
-      key: i * 2 + 1,
-      color: colors[i],
-      isFlipped: false,
-    });
-  }
-  return cards.sort(() => Math.random() - 0.5);
-}
-
-/* 
-Returns a new array of cards where the specified card (cardToFlip)
-will have a different value of its isFlipped: true changes to false and false to true.
-*/
-function flipCard(cards, cardToFlip) {
-  return cards.map((card) => {
-    if (card.key === cardToFlip.key) {
-      return { ...card, isFlipped: !card.isFlipped };
-    }
-    return card;
-  });
-}
+import * as helpers from "./helpers";
 
 function Memory() {
-  /*
-  utils
-    .fetchLeaderboard("memory")
-    .then((leaderboard) => console.log(leaderboard));
-  */
-
-  /* Intervals:
-  const startTime = Date.now();
-  const indervalId = setInterval(
-    () => console.log(Date.now() - startTime),
-    1000
-  );
-  clearInterval(indervalId);
-  */
-
-  /*
-  const [cards, setCards] = useState(generateCards());
-  is the same as:
-  const stateArray = useState(generateCards());
-  const cards = stateArray[0];
-  const setCards = stateArray[1];
-  */
   // [<current state>, <function to update state>] = useState(<initial state>)
   const [game, setGame] = useState({
-    cards: generateCards(),
-    firstCard: undefined,
-    secondCard: undefined,
+    cards: helpers.generateCards(),
   });
-
   const [startTime, setStartTime] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [win, setWin] = useState(false);
@@ -96,6 +31,7 @@ function Memory() {
     }
   }, [startTime, win]);
 
+  // When win becomes true, we save our score, fetch the leaderboard and print it to the console.
   useEffect(() => {
     if (win) {
       utils
@@ -109,96 +45,21 @@ function Memory() {
     }
   }, [win]);
 
-  /*
-  Runs every time a card is clicked, flips this card (updates state)
-  */
-  /* (old version)
+  // Is called whenever a card is clicked. Sets the new game state
+  // and starts the timer (sets the start time), if it wasn't already started.
   function onCardClicked(clickedCard) {
-    setCards((oldCards) => {
-      return oldCards.map((card) => {
-        if (card.key === clickedCard.key) {
-          return { ...card, isFlipped: !card.isFlipped };
-        }
-        return card;
-      });
-    });
-  }
-  */
-
-  function onCardClicked(clickedCard) {
-    // If the card is already flipped there is nothing we need to do (write an if-statement with a return; inside)
-    if (clickedCard.isFlipped) {
-      return;
-    }
-
-    setGame((oldGame) => {
-      const cards = oldGame.cards;
-      const firstCard = oldGame.firstCard;
-      const secondCard = oldGame.secondCard;
-
-      // The { cards, firstCard, secondCard } above is the decomposed game object.
-      // These three variables represent the previous state, before a card was clicked.
-      // We should return the new state, depending on the previous one and on the card that was clicked.
-      // There are 4 different cases.
-      // 1. If both firstCard and secondCard from the previous state are undefined =>
-      // we should flip the clicked card and set it as the firstCard
-      if (!firstCard) {
-        return {
-          cards: flipCard(cards, clickedCard),
-          firstCard: clickedCard,
-        };
-      }
-      // 2. Else, if firstCard is defined, but secondCard isn't =>
-      // we should flip the clicked card, keep the firstCard as is, but set the secondCard
-      else if (!secondCard) {
-        let newCards = flipCard(cards, clickedCard);
-
-        if (newCards.every((card) => card.isFlipped)) {
-          setWin(true);
-          console.log("You win!");
-        }
-
-        return {
-          cards: newCards,
-          firstCard: firstCard,
-          secondCard: clickedCard,
-        };
-      }
-      // 3. Else, if the previous two clicked cards have the same color =>
-      // we should flip the clicked card, set the new firstCard and remove secondCard from the state
-      else if (firstCard.color === secondCard.color) {
-        return {
-          cards: flipCard(cards, clickedCard),
-          firstCard: clickedCard,
-        };
-      }
-      // 4. Else, if the previous two clicked cards have different colors =>
-      // we should flip the clicked card and flip back firstCard and secondCard,
-      // we should also set the new firstCard and remove secondCard from the state
-      else {
-        let newCards = flipCard(cards, firstCard);
-        newCards = flipCard(newCards, secondCard);
-        newCards = flipCard(newCards, clickedCard);
-        return {
-          cards: newCards,
-          firstCard: clickedCard,
-        };
-      }
-    });
-
+    setGame((oldGame) =>
+      helpers.calculateNewGame(oldGame, clickedCard, () => setWin(true))
+    );
     setStartTime((oldStartTime) =>
       oldStartTime === 0 ? Date.now() : oldStartTime
     );
   }
 
-  /*
-  Runs when the restart button is clicked, resets the state wth the new cards
-  */
+  // Runs when the restart button is clicked, resets the state with the new cards.
   function onRestart() {
     setGame({
       cards: generateCards(),
-      firstCard: undefined,
-      secondCard: undefined,
     });
     setStartTime(0);
     setElapsedTime(0);
