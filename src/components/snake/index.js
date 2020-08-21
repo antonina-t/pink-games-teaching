@@ -4,11 +4,25 @@ import * as helpers from "./helpers.js";
 
 function Snake() {
   const [game, setGame] = useState(helpers.generateGame());
+  const [gameOver, setGameOver] = useState(false);
 
   useEffect(() => {
-    const intervalId = setInterval(() => setGame(helpers.tick), 400);
+    if (gameOver) return;
+    const intervalId = setInterval(
+      () =>
+        setGame((oldGame) => {
+          const newGame = helpers.tick(oldGame);
+          if (helpers.isGameOver(newGame)) {
+            setGameOver(true);
+            console.log("You lose :(");
+            return oldGame;
+          }
+          return newGame;
+        }),
+      400
+    );
     return () => clearInterval(intervalId);
-  }, []);
+  }, [gameOver]);
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyPress);

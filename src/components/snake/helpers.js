@@ -117,3 +117,15 @@ function generateNewTail(oldSnake, oldFood, newHead) {
   // --> your code here
   return newTail;
 }
+
+export function isGameOver(game) {
+  const snake = game.snake;
+  return (
+    isOutOfBounds(snake.head) ||
+    snake.tail.some((cell) => isEqual(cell, snake.head))
+  );
+}
+
+function isOutOfBounds(cell) {
+  return cell.x < 0 || cell.x >= width || cell.y < 0 || cell.y >= height;
+}
