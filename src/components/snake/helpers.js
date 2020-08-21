@@ -43,6 +43,9 @@ function random(max) {
   return Math.floor(Math.random() * max);
 }
 
+/*
+Generates new game state depending on the previous game state
+*/
 export function tick(oldGame) {
   const oldSnake = oldGame.snake;
   const oldFood = oldGame.food;
@@ -59,6 +62,9 @@ export function tick(oldGame) {
   // Wait a minute... if newHead has eaten the food, we should generate new food!
   // In that case, change newFood, use generateFood function.
   // --> your code here
+  if (isEqual(newHead, newFood)) {
+    newFood = generateFood(newSnake);
+  }
 
   return {
     snake: newSnake,
@@ -75,14 +81,17 @@ function generateNewHead(oldSnake) {
     case "down":
       // newHead = ???
       // --> your code here
+      newHead = { x: oldSnake.head.x, y: oldSnake.head.y + 1 };
       break;
     case "left":
       // newHead = ???
       // --> your code here
+      newHead = { x: oldSnake.head.x - 1, y: oldSnake.head.y };
       break;
     case "up":
       // newHead = ???
       // --> your code here
+      newHead = { x: oldSnake.head.x, y: oldSnake.head.y - 1 };
       break;
   }
   return newHead;
@@ -93,9 +102,18 @@ function generateNewTail(oldSnake, oldFood, newHead) {
   // and the rest of the cells should be the old snake's tail. Use concat() function
   // to add (append) a whole array to another array. Or you can use the [...myArray] syntax somehow... :)
   // --> your code here
+  let newTail = [oldSnake.head];
+  newTail = newTail.concat(oldSnake.tail);
+
+  newTail = [oldSnake.head, ...oldSnake.tail];
   // Now the snake's tail has become longer! We should keep it like that if the snake has eaten,
   // otherwise we need to shorten it (remove the last element). Use the pop() function.
   // --> your code here
+  if (!isEqual(newHead, oldFood)) {
+    newTail.pop();
+  }
+
   // Don't forget to return newTail!
   // --> your code here
+  return newTail;
 }
