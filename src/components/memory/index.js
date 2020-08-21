@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "./index.css";
-import StatusBar from "./StatusBar";
+import StatusBar from "../StatusBar";
 import MemoryCard from "./MemoryCard";
 import * as utils from "../../utils";
 import * as helpers from "./helpers";
+import ResultModal from "../ResultModal";
 
 function Memory() {
   // [<current state>, <function to update state>] = useState(<initial state>)
@@ -13,6 +14,7 @@ function Memory() {
   const [startTime, setStartTime] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [win, setWin] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   // useEffect(<effect function>, <dependency array> - optional)
   // <dependency array>:
@@ -31,17 +33,10 @@ function Memory() {
     }
   }, [startTime, win]);
 
-  // When win becomes true, we save our score, fetch the leaderboard and print it to the console.
+  // When win becomes true, show the modal.
   useEffect(() => {
     if (win) {
-      utils
-        .saveScore("memory", {
-          name: "Antonina",
-          timeMs: elapsedTime,
-        })
-        .then(() => console.log("Score saved."))
-        .then(() => utils.fetchLeaderboard("memory"))
-        .then((leaderboard) => console.log(leaderboard));
+      setShowModal(true);
     }
   }, [win]);
 
@@ -59,7 +54,7 @@ function Memory() {
   // Runs when the restart button is clicked, resets the state with the new cards.
   function onRestart() {
     setGame({
-      cards: generateCards(),
+      cards: helpers.generateCards(),
     });
     setStartTime(0);
     setElapsedTime(0);
@@ -82,6 +77,12 @@ function Memory() {
           />
         ))}
       </div>
+      <ResultModal
+        show={showModal}
+        handleClose={() => setShowModal(false)}
+        header={"Congratulations, you won!"}
+        body={"Your time was " + elapsedTime + "ms."}
+      ></ResultModal>
     </div>
   );
 }
