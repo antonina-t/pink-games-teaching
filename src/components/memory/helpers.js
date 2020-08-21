@@ -105,7 +105,8 @@ export function calculateNewGame(oldGame, clickedCard, onGameWon) {
   }
 }
 
-// Score object looks like this:[{ name: "Antonina", timeMs: 200000}, { name: "Charlotte", timeMs: 10000}]
+// Score object looks like this:
+// [{ name: "Antonina", timeMs: 200000}, { name: "Charlotte", timeMs: 10000}]
 export function fetchLeaderboard() {
   return utils
     .fetchLeaderboard("memory", [["timeMs", "asc"]])
@@ -114,4 +115,8 @@ export function fetchLeaderboard() {
         (score, i) => `${i + 1}. ${score.name}: ${score.timeMs}ms`
       )
     );
+}
+
+export function saveScore(name, timeMs) {
+  utils.saveScore("memory", { name, timeMs });
 }
