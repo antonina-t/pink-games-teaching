@@ -14,7 +14,7 @@ function Memory() {
   const [startTime, setStartTime] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [win, setWin] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(true);
 
   // useEffect(<effect function>, <dependency array> - optional)
   // <dependency array>:
@@ -82,6 +82,7 @@ function Memory() {
         handleClose={() => setShowModal(false)}
         header={"Congratulations, you won!"}
         body={"Your time was " + elapsedTime + "ms."}
+        fetchLeaderboard={helpers.fetchLeaderboard}
       ></ResultModal>
     </div>
   );

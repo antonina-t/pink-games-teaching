@@ -1,3 +1,5 @@
+import * as utils from "../../utils";
+
 const colors = [
   "pink",
   "red",
@@ -101,4 +103,15 @@ export function calculateNewGame(oldGame, clickedCard, onGameWon) {
       firstCard: clickedCard,
     };
   }
+}
+
+// Score object looks like this:[{ name: "Antonina", timeMs: 200000}, { name: "Charlotte", timeMs: 10000}]
+export function fetchLeaderboard() {
+  return utils
+    .fetchLeaderboard("memory", [["timeMs", "asc"]])
+    .then((leaderboard) =>
+      leaderboard.map(
+        (score, i) => `${i + 1}. ${score.name}: ${score.timeMs}ms`
+      )
+    );
 }
