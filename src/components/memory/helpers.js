@@ -112,7 +112,8 @@ export function fetchLeaderboard() {
     .fetchLeaderboard("memory", [["timeMs", "asc"]])
     .then((leaderboard) =>
       leaderboard.map(
-        (score, i) => `${i + 1}. ${score.name}: ${score.timeMs}ms`
+        (score, i) =>
+          `${i + 1}. ${score.name}: ${utils.prettifyTime(score.timeMs)}`
       )
     );
 }

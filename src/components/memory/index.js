@@ -64,7 +64,7 @@ function Memory() {
   return (
     <div className="game-container">
       <StatusBar
-        status={"Time: " + elapsedTime}
+        status={"Time: " + utils.prettifyTime(elapsedTime)}
         onRestart={onRestart}
       ></StatusBar>
       <div className="memory-grid">
@@ -81,7 +81,7 @@ function Memory() {
         show={showModal}
         handleClose={() => setShowModal(false)}
         header={"Congratulations, you won!"}
-        body={"Your time was " + elapsedTime + "ms."}
+        body={"Your time was " + utils.prettifyTime(elapsedTime) + "."}
         fetchLeaderboard={helpers.fetchLeaderboard}
         saveScore={(name) => helpers.saveScore(name, elapsedTime)}
       ></ResultModal>
