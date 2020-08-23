@@ -21,11 +21,13 @@ export function generateCards() {
       key: i * 2,
       color: colors[i],
       isFlipped: false,
+      isLocked: false,
     });
     cards.push({
       key: i * 2 + 1,
       color: colors[i],
       isFlipped: false,
+      isLocked: false,
     });
   }
   return cards.sort(() => Math.random() - 0.5);
@@ -39,6 +41,15 @@ export function flipCard(cards, cardToFlip) {
   return cards.map((card) => {
     if (card.key === cardToFlip.key) {
       return { ...card, isFlipped: !card.isFlipped };
+    }
+    return card;
+  });
+}
+
+export function lockCard(cards, cardToLock) {
+  return cards.map((card) => {
+    if (card.key === cardToLock.key) {
+      return { ...card, isLocked: true };
     }
     return card;
   });
@@ -59,7 +70,7 @@ export function calculateNewGame(
   }
 
   const { cards, firstCard } = oldGame;
-  const newCards = flipCard(cards, clickedCard);
+  let newCards = flipCard(cards, clickedCard);
   if (!firstCard) {
     return {
       cards: newCards,
@@ -69,7 +80,11 @@ export function calculateNewGame(
     if (firstCard.color !== clickedCard.color) {
       setWrongPair([firstCard, clickedCard]);
     } else {
-      // TODO: check the win condition and call onGameWon()
+      newCards = lockCard(newCards, firstCard);
+      newCards = lockCard(newCards, clickedCard);
+      if (newCards.every((card) => card.isLocked)) {
+        onGameWon();
+      }
     }
 
     return {
