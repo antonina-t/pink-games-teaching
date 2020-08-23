@@ -1,14 +1,14 @@
 import * as utils from "../../utils";
 
-const colors = [
-  "pink",
-  "red",
-  "orange",
-  "yellow",
-  "green",
-  "teal",
-  "blue",
-  "purple",
+const images = [
+  "banana",
+  "cat",
+  "chicken",
+  "coffee",
+  "eiffel",
+  "stockholm",
+  "swan",
+  "tomato",
 ];
 
 /*
@@ -16,16 +16,16 @@ Returns an array of shuffled cards, all of them are face-down.
 */
 export function generateCards() {
   const cards = [];
-  for (let i = 0; i < colors.length; i++) {
+  for (let i = 0; i < images.length; i++) {
     cards.push({
       key: i * 2,
-      color: colors[i],
+      image: images[i],
       isFlipped: false,
       isLocked: false,
     });
     cards.push({
       key: i * 2 + 1,
-      color: colors[i],
+      image: images[i],
       isFlipped: false,
       isLocked: false,
     });
@@ -77,7 +77,7 @@ export function calculateNewGame(
       firstCard: clickedCard,
     };
   } else {
-    if (firstCard.color !== clickedCard.color) {
+    if (firstCard.image !== clickedCard.image) {
       setWrongPair([firstCard, clickedCard]);
     } else {
       newCards = lockCard(newCards, firstCard);

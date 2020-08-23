@@ -108,7 +108,7 @@ function Memory() {
         {game.cards.map((card) => (
           <MemoryCard
             key={card.key}
-            color={card.color}
+            image={card.image}
             isFlipped={card.isFlipped}
             onClick={() => onCardClicked(card)}
           />
