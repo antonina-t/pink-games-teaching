@@ -66,7 +66,7 @@ export function calculateNewGame(
   setWrongPair
 ) {
   if (clickedCard.isFlipped) {
-    return;
+    return oldGame;
   }
 
   const { cards, firstCard } = oldGame;

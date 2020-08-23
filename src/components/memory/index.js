@@ -16,6 +16,7 @@ function Memory() {
   const [win, setWin] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [wrongPair, setWrongPair] = useState(null);
+  const [noClicksAllowed, setNoClicksAllowed] = useState(false);
 
   const timeoutIds = useRef([]);
 
@@ -46,6 +47,7 @@ function Memory() {
   // Schedules the flip back of the wrong pair of cards one second from now.
   useEffect(() => {
     if (!wrongPair) return;
+    setNoClicksAllowed(true);
     const timeoutId = setTimeout(() => {
       setGame((oldGame) => {
         let newCards = helpers.flipCard(oldGame.cards, wrongPair[0]);
@@ -55,6 +57,7 @@ function Memory() {
           cards: newCards,
         };
       });
+      setNoClicksAllowed(false);
     }, 1000);
     timeoutIds.current.push(timeoutId);
   }, [wrongPair]);
@@ -69,6 +72,7 @@ function Memory() {
   // Is called whenever a card is clicked. Sets the new game state
   // and starts the timer (sets the start time), if it wasn't already started.
   function onCardClicked(clickedCard) {
+    if (noClicksAllowed) return;
     setGame((oldGame) =>
       helpers.calculateNewGame(
         oldGame,
