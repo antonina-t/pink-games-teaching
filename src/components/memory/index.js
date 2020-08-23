@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./index.css";
 import StatusBar from "../StatusBar";
 import MemoryCard from "./MemoryCard";
@@ -15,6 +15,9 @@ function Memory() {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [win, setWin] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [wrongPair, setWrongPair] = useState(null);
+
+  const timeoutIds = useRef([]);
 
   // useEffect(<effect function>, <dependency array> - optional)
   // <dependency array>:
@@ -40,11 +43,39 @@ function Memory() {
     }
   }, [win]);
 
+  // Schedules the flip back of the wrong pair of cards one second from now.
+  useEffect(() => {
+    if (!wrongPair) return;
+    const timeoutId = setTimeout(() => {
+      setGame((oldGame) => {
+        let newCards = helpers.flipCard(oldGame.cards, wrongPair[0]);
+        newCards = helpers.flipCard(newCards, wrongPair[1]);
+        return {
+          ...oldGame,
+          cards: newCards,
+        };
+      });
+    }, 1000);
+    timeoutIds.current.push(timeoutId);
+  }, [wrongPair]);
+
+  // Clears all wrong pair timeouts - happens when we leave the component.
+  useEffect(() => {
+    return () => {
+      timeoutIds.current.forEach((id) => clearTimeout(id));
+    };
+  }, []);
+
   // Is called whenever a card is clicked. Sets the new game state
   // and starts the timer (sets the start time), if it wasn't already started.
   function onCardClicked(clickedCard) {
     setGame((oldGame) =>
-      helpers.calculateNewGame(oldGame, clickedCard, () => setWin(true))
+      helpers.calculateNewGame(
+        oldGame,
+        clickedCard,
+        () => setWin(true),
+        setWrongPair
+      )
     );
     setStartTime((oldStartTime) =>
       oldStartTime === 0 ? Date.now() : oldStartTime
@@ -59,6 +90,8 @@ function Memory() {
     setStartTime(0);
     setElapsedTime(0);
     setWin(false);
+    timeoutIds.current.forEach((id) => clearTimeout(id));
+    timeoutIds.current = [];
   }
 
   return (
