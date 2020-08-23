@@ -118,5 +118,5 @@ export function fetchLeaderboard() {
 }
 
 export function saveScore(name, timeMs) {
-  utils.saveScore("memory", { name, timeMs });
+  return utils.saveScore("memory", { name, timeMs });
 }
