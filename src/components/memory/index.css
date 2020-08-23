@@ -1,8 +1,18 @@
+@media only screen and (orientation: landscape) {
+  .memory-grid {
+    height: 40vw;
+    grid-gap: 0.5vw;
+  }
+}
+@media only screen and (orientation: portrait) {
+  .memory-grid {
+    height: 98vw;
+    grid-gap: 1vw;
+  }
+}
 .memory-grid {
   margin-top: 1vw;
-  height: 40vw;
   display: grid;
-  grid-template-rows: repeat(4, auto);
   grid-template-columns: repeat(4, auto);
-  grid-gap: 0.5vw;
+  grid-template-rows: repeat(4, auto);
 }

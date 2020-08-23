@@ -1,5 +1,14 @@
+@media only screen and (orientation: landscape) {
+  .snake-grid {
+    height: 24vw;
+  }
+}
+@media only screen and (orientation: portrait) {
+  .snake-grid {
+    height: 58.8vw;
+  }
+}
 .snake-grid {
-  height: 24vw;
   display: grid;
   grid-template-columns: repeat(20, auto);
   grid-template-rows: repeat(12, auto);
